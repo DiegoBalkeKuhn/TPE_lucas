@@ -7,13 +7,13 @@ int main() {
         perror("Error opening file");
         return 1;
     }
-    TreeR root;
+    BTreeNode root;
 
     while (1) {
-        printf("O que gostaria de fazer?");
-        printf("1 - Registrar");
-        printf("2 - Ler Registros");
-        printf("3 - Apagar Registros");
+        printf("O que gostaria de fazer?\n");
+        printf("1 - Registrar\n");
+        printf("2 - Ler Registros\n");
+        printf("3 - Apagar Registros\n");
         printf("0 - Sair");
         int r = 0;
         scanf("%d", &r);
