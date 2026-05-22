@@ -7,7 +7,6 @@ int main() {
         perror("Error opening file");
         return 1;
     }
-    BTreeNode root;
 
     while (1) {
         printf("O que gostaria de fazer?\n");
