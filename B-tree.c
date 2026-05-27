@@ -1,6 +1,6 @@
 #include "B-tree.h"
 
-/* ─── Criação de nó ──────────────────────────────────────────────────── */
+/* Criação de nó */
 
 BTreeNode* createNode(int t, int leaf) {
     BTreeNode* node = (BTreeNode*)malloc(sizeof(BTreeNode));
@@ -13,7 +13,7 @@ BTreeNode* createNode(int t, int leaf) {
     return node;
 }
 
-/* ─── Inserção ───────────────────────────────────────────────────────── */
+/* Inserção  */
 
 void splitChild(BTreeNode* parent, int index, int t) {
     BTreeNode* fullChild = parent->children[index];
@@ -78,7 +78,7 @@ void insert(BTreeNode** root, int key, int t) {
     }
 }
 
-/* ─── Busca ─────────────────────────────────────────────────────────── */
+/*  Busca  */
 
 BTreeNode* search(BTreeNode* root, int key) {
     if (root == NULL) return NULL;
@@ -89,7 +89,7 @@ BTreeNode* search(BTreeNode* root, int key) {
     return search(root->children[i], key);
 }
 
-/* ─── Remoção ────────────────────────────────────────────────────────── */
+/* Remoção  */
 
 /* Retorna o predecessor (maior chave na sub-árvore esquerda do filho) */
 static int getPredecessor(BTreeNode* node, int idx) {
@@ -234,7 +234,7 @@ void delete(BTreeNode** root, int key, int t) {
     }
 }
 
-/* ─── Impressão em ordem ─────────────────────────────────────────────── */
+/* Impressão em ordem  */
 
 void printInOrder(BTreeNode* root) {
     if (root == NULL) return;
@@ -245,7 +245,7 @@ void printInOrder(BTreeNode* root) {
     printInOrder(root->children[root->numKeys]);
 }
 
-/* ─── Liberação de memória ───────────────────────────────────────────── */
+/* Liberação de memória  */
 
 void freeTree(BTreeNode* node) {
     if (node == NULL) return;
@@ -257,7 +257,7 @@ void freeTree(BTreeNode* node) {
     free(node);
 }
 
-/* ─── Persistência (serialização binária) ────────────────────────────── */
+/*  Persistência (serialização binária)  */
 /*
    Formato de cada nó no arquivo:
    [int leaf][int numKeys][int keys[numKeys]]
@@ -302,7 +302,7 @@ BTreeNode* loadTree(FILE* file, int t) {
     return node;
 }
 
-/* ─── Funções de interface ───────────────────────────────────────────── */
+/*  Funções de interface  */
 
 void registrar(BTreeNode **root, FILE *file, int t) {
     int key;
