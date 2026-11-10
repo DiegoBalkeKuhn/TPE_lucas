@@ -1,6 +1,6 @@
 #include "B-tree.h"
 
-/* ─── Criação de nó ──────────────────────────────────────────────────── */
+/*Criação de nó*/
 
 BTreeNode* createNode(int t, int leaf) {
     BTreeNode* node = (BTreeNode*)malloc(sizeof(BTreeNode));
@@ -13,7 +13,7 @@ BTreeNode* createNode(int t, int leaf) {
     return node;
 }
 
-/* ─── Inserção ───────────────────────────────────────────────────────── */
+/*Inserção*/
 
 void splitChild(BTreeNode* parent, int index, int t) {
     BTreeNode* fullChild = parent->children[index];
@@ -78,7 +78,7 @@ void insert(BTreeNode** root, int key, int t) {
     }
 }
 
-/* ─── Busca ─────────────────────────────────────────────────────────── */
+/*Busca*/
 
 BTreeNode* search(BTreeNode* root, int key) {
     if (root == NULL) return NULL;
@@ -89,23 +89,23 @@ BTreeNode* search(BTreeNode* root, int key) {
     return search(root->children[i], key);
 }
 
-/* ─── Remoção ────────────────────────────────────────────────────────── */
+/*Remoção*/
 
-/* Retorna o predecessor (maior chave na sub-árvore esquerda do filho) */
+/*Retorna o predecessor*/
 static int getPredecessor(BTreeNode* node, int idx) {
     BTreeNode* cur = node->children[idx];
     while (!cur->leaf) cur = cur->children[cur->numKeys];
     return cur->keys[cur->numKeys - 1];
 }
 
-/* Retorna o sucessor (menor chave na sub-árvore direita do filho) */
+/*Retorna o sucessor*/
 static int getSuccessor(BTreeNode* node, int idx) {
     BTreeNode* cur = node->children[idx + 1];
     while (!cur->leaf) cur = cur->children[0];
     return cur->keys[0];
 }
 
-/* Empurra a chave do pai para o filho da esquerda e pega do irmão direito */
+/*Empurra a chave do pai para o filho da esquerda e pega do irmão direito*/
 static void borrowFromNext(BTreeNode* node, int idx) {
     BTreeNode* child  = node->children[idx];
     BTreeNode* sibling = node->children[idx + 1];
@@ -124,7 +124,7 @@ static void borrowFromNext(BTreeNode* node, int idx) {
     sibling->numKeys--;
 }
 
-/* Empurra a chave do pai para o filho da direita e pega do irmão esquerdo */
+/*Empurra a chave do pai para o filho da direita e pega do irmão esquerdo*/
 static void borrowFromPrev(BTreeNode* node, int idx) {
     BTreeNode* child  = node->children[idx];
     BTreeNode* sibling = node->children[idx - 1];
@@ -143,7 +143,6 @@ static void borrowFromPrev(BTreeNode* node, int idx) {
     sibling->numKeys--;
 }
 
-/* Funde filho[idx] com filho[idx+1] usando keys[idx] como separador */
 static void merge(BTreeNode* node, int idx, int t) {
     BTreeNode* child  = node->children[idx];
     BTreeNode* sibling = node->children[idx + 1];
@@ -165,7 +164,7 @@ static void merge(BTreeNode* node, int idx, int t) {
     free(sibling);
 }
 
-/* Garante que o filho[idx] tem pelo menos t chaves antes de descer */
+/*Garante que o filho[idx] tem pelo menos t chaves antes de descer*/
 static void fill(BTreeNode* node, int idx, int t) {
     if (idx != 0 && node->children[idx - 1]->numKeys >= t)
         borrowFromPrev(node, idx);
@@ -234,7 +233,7 @@ void delete(BTreeNode** root, int key, int t) {
     }
 }
 
-/* ─── Impressão em ordem ─────────────────────────────────────────────── */
+/*Impressão em ordem*/
 
 void printInOrder(BTreeNode* root) {
     if (root == NULL) return;
@@ -245,7 +244,7 @@ void printInOrder(BTreeNode* root) {
     printInOrder(root->children[root->numKeys]);
 }
 
-/* ─── Liberação de memória ───────────────────────────────────────────── */
+/*Liberação de memória*/
 
 void freeTree(BTreeNode* node) {
     if (node == NULL) return;
@@ -256,14 +255,6 @@ void freeTree(BTreeNode* node) {
     free(node->children);
     free(node);
 }
-
-/* ─── Persistência (serialização binária) ────────────────────────────── */
-/*
-   Formato de cada nó no arquivo:
-   [int leaf][int numKeys][int keys[numKeys]]
-   Depois, recursivamente, os filhos (se não for folha).
-   Um marcador -1 indica ponteiro nulo.
-*/
 
 void saveTree(BTreeNode* root, FILE* file) {
     if (root == NULL) {
@@ -302,7 +293,7 @@ BTreeNode* loadTree(FILE* file, int t) {
     return node;
 }
 
-/* ─── Funções de interface ───────────────────────────────────────────── */
+/*Funções de interface*/
 
 void registrar(BTreeNode **root, FILE *file, int t) {
     int key;
@@ -316,7 +307,6 @@ void registrar(BTreeNode **root, FILE *file, int t) {
 
     insert(root, key, t);
 
-    /* Reescreve o arquivo com a árvore atualizada */
     rewind(file);
     ftruncate(fileno(file), 0);
     saveTree(*root, file);
